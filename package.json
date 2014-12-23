@@ -1,0 +1,26 @@
+{
+  "name": "rehash.js",
+  "version": "0.1.0",
+  "description": "A URL fragment manipulation library.",
+  "main": "rehash.js",
+  "dependencies": {
+    "jest-cli": "^0.2.1"
+  },
+  "devDependencies": {
+    "jest-cli": "^0.2.1"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:amussey/hashlib.js.git"
+  },
+  "keywords": [
+    "hash",
+    "fragment",
+    "url"
+  ],
+  "author": "Andrew Mussey",
+  "license": "BSD"
+}

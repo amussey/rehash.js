@@ -48,7 +48,7 @@ if (!Array.prototype.indexOf) {
                 '\nNew URL:\t\t'     + event.newURL +
                 '\nNew URL Strip:\t' + hashStrip(event.newURL));*/
             hashBreak(hashStrip(parent.location.hash));
-            hashChanged();
+            // hashChanged();
             //hashBreak(hashStrip(event.oldURL), true);
         }
     } else { // event not supported:*/
@@ -63,21 +63,25 @@ if (!Array.prototype.indexOf) {
                 hashBreak(hashStrip(parent.location.hash));//, false);
                 //hashBreak(hashStrip(storedHash), true);
                 storedHash = parent.location.hash;
-                hashChanged();
+                // hashChanged();
             }
         }, 100);
     }
 })();
 
 
-
-
+/**
+ * Removes the # from the front of a fragment.
+ *
+ * @param {number} hashURL A URL to strip a # from.
+ * @return a URL sans #
+ */
 function hashStrip(hashURL) {
-    return (hashURL.indexOf("#") != -1) ?
-        hashURL.substring(hashURL.indexOf("#")+1, hashURL.length) :
-        (hashURL.indexOf("https://") == -1 && hashURL.indexOf("http://") == -1 ? hashURL : "");
+    if (hashURL[0] == "#") {
+        return hashStrip(hashURL.slice(1));
+    }
+    return hashURL;
 }
-
 
 
 function hashBreak(hashValue) {
@@ -98,10 +102,6 @@ function hashBreak(hashValue) {
     }
     window.hashCan.oStored = hashJoin(false, false);
 }
-
-
-
-
 
 
 function hashFind(keyValue, hashOld) {
@@ -129,11 +129,6 @@ function hashGet(keyValue, hashOld) {
 }
 
 
-
-
-
-
-
 function hashIndexOf(keyValue, hashOld) {
     hashOld   = (typeof hashOld   == "undefined") ? false : hashOld;
     if (!hashOld) {
@@ -142,9 +137,6 @@ function hashIndexOf(keyValue, hashOld) {
         return window.hashCan.oKey.indexOf(keyValue);
     }
 }
-
-
-
 
 
 function hashJoin(showSuppressed, hashOld) {
@@ -190,13 +182,11 @@ function hashJoin(showSuppressed, hashOld) {
 }
 
 
-
-
-
 function hashAdd(hashKey, hashValue, valueSuppress, hashOld) {
     hashSilentUpdate(hashKey, hashValue, valueSuppress);
     hashSet();
 }
+
 
 function hashUpdate(hashKey, hashValue, valueSuppress, hashOld) {
     hashSilentUpdate(hashKey, hashValue, valueSuppress);
@@ -255,7 +245,6 @@ function hashSilentUpdate(hashKey, hashValue, valueSuppress, hashOld) {
 }
 
 
-
 function hashSuppress(hashKey, valueSuppress) {
     var hashindexofkey = hashIndexOf(hashKey);
     if (hashindexofkey != -1) {
@@ -263,6 +252,7 @@ function hashSuppress(hashKey, valueSuppress) {
     }
     hashSet();
 }
+
 
 function hashSilentSuppress(hashKey, valueSuppress) {
     var hashindexofkey = hashIndexOf(hashKey);
@@ -280,9 +270,6 @@ function hashSuppressAll(valueSuppress) {
     }
     hashSet();
 }
-
-
-
 
 
 function hashSet() {
@@ -331,3 +318,11 @@ function hashDelete(deleteKey){
     parent.location.hash = hashJoin();
     
 }*/
+
+var rehash = {
+    strip: hashStrip
+}
+
+if (typeof module !== 'undefined') {
+    module.exports = rehash;
+}
