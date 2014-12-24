@@ -1,80 +1,6 @@
-// This builds in the indexOf Prototype for arrays
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function(elt /*, from*/) {
-        var len = this.length;
-        var from = Number(arguments[1]) || 0;
-        from = (from < 0) ? Math.ceil(from) : Math.floor(from);
-        if (from < 0) {
-            from += len;
-        }
-
-        for (; from < len; from++) {
-            if (from in this && this[from] === elt) {
-                return from;
-            }
-        }
-        return -1;
-    };
-}
-
-/*
- * object.watch polyfill
- *
- * 2012-04-03
- *
- * By Eli Grey, http://eligrey.com
- * Public Domain.
- * NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
- */
- 
-// object.watch
-if (!Object.prototype.watch) {
-    Object.defineProperty(Object.prototype, "watch", {
-        enumerable: false,
-        configurable: true,
-        writable: false,
-        value: function (prop, handler) {
-            var oldval = this[prop],
-                newval = oldval,
-                getter = function () {
-                    return newval;
-                },
-                setter = function (val) {
-                    oldval = newval;
-                    return newval = handler.call(this, prop, oldval, val);
-                };
-
-            if (delete this[prop]) { // can't watch constants
-                Object.defineProperty(this, prop, {
-                    get: getter,
-                    set: setter,
-                    enumerable: true,
-                    configurable: true
-                });
-            }
-        }
-    });
-}
- 
-// object.unwatch
-if (!Object.prototype.unwatch) {
-    Object.defineProperty(Object.prototype, "unwatch", {
-          enumerable: false
-        , configurable: true
-        , writable: false
-        , value: function (prop) {
-            var val = this[prop];
-            delete this[prop]; // remove accessors
-            this[prop] = val;
-        }
-    });
-}
-
-
 (function(window) {
 
     function setUp() {
-
         if ("onhashchange" in window) { // event supported
             window.onhashchange = function (event) {
                 hashStore(parent.location.hash);
@@ -93,6 +19,7 @@ if (!Object.prototype.unwatch) {
         }
         hashStore(parent.location.hash);
     }
+
 
     /**
      * Removes the # from the front of a fragment.
