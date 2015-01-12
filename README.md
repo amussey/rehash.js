@@ -43,3 +43,14 @@ If you have modified the values contained in the rehash array (`location.rehash`
 ```javascript
 location.rehash._build();
 ```
+
+
+## Development
+
+### Building
+
+The default `grunt` task will build a minimized Javascript file.  Simply run `grunt`.
+
+### Testing
+
+Testing is set up with [Jest](https://facebook.github.io/jest/).  To run the tests, run `npm test`.

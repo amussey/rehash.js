@@ -1,7 +1,7 @@
 //
 // rehash.js -- A URL fragment manipulation library.
 //
-// Version 1.0.0
+// Version 1.0.1
 //
 // Copyright (c) 2014 Andrew Mussey, amussey.com
 //
@@ -11,7 +11,7 @@
 // For usage examples, see https://github.com/amussey/rehash.js/.
 //
 
-(function(window) {
+/* test-code */ module.exports = /* end-test-code */ (function(window) {
 
     /**
      * The initial setup for rehash.js.  This adds the listeners for when the
@@ -60,16 +60,28 @@
 
 
     /**
-     * Break apart the provided hash and store it in location.rehash.
+     * A wrapper function for _hashStore.  Assigns the hash that was broken apart
+     * to location.rehash.
      *
-     * @param {number} hash The new URL hash value.
+     * @param {string} hash The new URL hash value.
      */
     function hashStore(hash) {
+        newRehash = _hashStore(hash);
+        newRehash._build = hashBuild;
+        parent.location.rehash = newRehash;
+    }
+
+    /**
+     * Break apart the provided hash and creates an object for location.rehash.
+     *
+     * @param {string} hash The new URL hash value.
+     * @return A new object for location.rehash.
+     */
+    function _hashStore(hash) {
         hash = hashStrip(hash);
 
         var newRehash = {
-            _raw: hash,
-            _build: hashBuild,
+            _raw: hash
         };
         var keys = hash.split("&");
         for (var i in keys) {
@@ -82,26 +94,37 @@
                 newRehash[key] = "";
             }
         }
-        parent.location.rehash = newRehash;
+        return newRehash;
     }
 
 
     /**
-     * Build a new hash string from the values stored in the rehash array
-     * and publish them to location.hash.
+     * A wrapper function for _hashBuild.  Publishes the new hash string
+     * (built from the values stored in the rehash array) to location.hash.
      */
     function hashBuild() {
+        parent.location.hash = _hashBuild(parent.location.rehash);
+    }
+
+    /**
+     * A private function that builds a new hash string from the values
+     * stored in the rehash array.
+     *
+     * @param {object} rehash The current rehash value.
+     * @return A string for assigning to location.hash.
+     */
+    function _hashBuild(rehash) {
         var newHash = [];
-        for (var key in parent.location.rehash) {
+        for (var key in rehash) {
             if (key[0] != "_") {
-                if (parent.location.rehash[key] == "") {
+                if (rehash[key] == "") {
                     newHash.push(encodeURI(key));
                 } else {
-                    newHash.push([encodeURI(key), encodeURI(parent.location.rehash[key])].join("="));
+                    newHash.push([encodeURI(key), encodeURI(rehash[key])].join("="));
                 }
             }
         }
-        parent.location.hash = newHash.join("&");
+        return newHash.join("&");
     }
 
 
@@ -115,5 +138,16 @@
     }
 
     setUp();
+
+    /* test-code */
+    var rehash = {
+        __testonly__: {
+            hashStrip: hashStrip,
+            _hashStore: _hashStore,
+            _hashBuild: _hashBuild
+        }
+    };
+    return rehash;
+    /* end-test-code */
 
 })(window);
