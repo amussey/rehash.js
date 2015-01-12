@@ -1,6 +1,6 @@
 {
   "name": "rehash.js",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A URL fragment manipulation library.",
   "main": "rehash.js",
   "dependencies": {

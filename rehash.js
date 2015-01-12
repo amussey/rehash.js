@@ -1,11 +1,32 @@
+//
+// rehash.js -- A URL fragment manipulation library.
+//
+// Version 1.0.0
+//
+// Copyright (c) 2014 Andrew Mussey, amussey.com
+//
+// Redistributable under a BSD license.
+// See LICENSE for more information.
+//
+// For usage examples, see https://github.com/amussey/rehash.js/.
+//
+
 (function(window) {
 
+    /**
+     * The initial setup for rehash.js.  This adds the listeners for when the
+     * hash changes and dispatches the rehash event when the new rehash array
+     * has been constructed.
+     */
     function setUp() {
         if ("onhashchange" in window) { // event supported
             window.onhashchange = function (event) {
                 hashStore(parent.location.hash);
                 var rehashEvent = new Event('rehash');
                 window.dispatchEvent(rehashEvent);
+                if (isJqueryInstalled()) {
+                    $(window).trigger("rehash");
+                }
             }
         } else { // event not supported
             var storedHash = parent.location.hash;
@@ -14,6 +35,9 @@
                     hashStore(parent.location.hash);
                     var rehashEvent = new Event('rehash');
                     window.dispatchEvent(rehashEvent);
+                    if (isJqueryInstalled()) {
+                        $(window).trigger("rehash");
+                    }
                 }
             }, 100);
         }
@@ -35,6 +59,11 @@
     }
 
 
+    /**
+     * Break apart the provided hash and store it in location.rehash.
+     *
+     * @param {number} hash The new URL hash value.
+     */
     function hashStore(hash) {
         hash = hashStrip(hash);
 
@@ -57,6 +86,10 @@
     }
 
 
+    /**
+     * Build a new hash string from the values stored in the rehash array
+     * and publish them to location.hash.
+     */
     function hashBuild() {
         var newHash = [];
         for (var key in parent.location.rehash) {
@@ -72,8 +105,13 @@
     }
 
 
+    /**
+     * Check if jQuery ha been included in the currently running script.
+     *
+     * @return True if jQuery is installed, false otherwise.
+     */
     function isJqueryInstalled() {
-        return (typeof $() !== "object");
+        return (typeof $() === "object");
     }
 
     setUp();
