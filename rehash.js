@@ -11,7 +11,7 @@
 // For usage examples, see https://github.com/amussey/rehash.js/.
 //
 
-/* test-code */ module.exports = /* end-test-code */ (function(window) {
+var rehash = (function(window) {
 
     /**
      * The initial setup for rehash.js.  This adds the listeners for when the
@@ -24,7 +24,7 @@
                 hashStore(parent.location.hash);
                 var rehashEvent = new Event('rehash');
                 window.dispatchEvent(rehashEvent);
-                if (isJqueryInstalled()) {
+                if (window.jQuery) {
                     $(window).trigger("rehash");
                 }
             }
@@ -35,7 +35,7 @@
                     hashStore(parent.location.hash);
                     var rehashEvent = new Event('rehash');
                     window.dispatchEvent(rehashEvent);
-                    if (isJqueryInstalled()) {
+                    if (window.jQuery) {
                         $(window).trigger("rehash");
                     }
                 }
@@ -70,6 +70,7 @@
         newRehash._build = hashBuild;
         parent.location.rehash = newRehash;
     }
+
 
     /**
      * Break apart the provided hash and creates an object for location.rehash.
@@ -106,6 +107,7 @@
         parent.location.hash = _hashBuild(parent.location.rehash);
     }
 
+
     /**
      * A private function that builds a new hash string from the values
      * stored in the rehash array.
@@ -128,15 +130,6 @@
     }
 
 
-    /**
-     * Check if jQuery ha been included in the currently running script.
-     *
-     * @return True if jQuery is installed, false otherwise.
-     */
-    function isJqueryInstalled() {
-        return (typeof $() === "object");
-    }
-
     setUp();
 
     /* test-code */
@@ -151,3 +144,9 @@
     /* end-test-code */
 
 })(window);
+
+/* test-code */
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = rehash;
+}
+/* end-test-code */
